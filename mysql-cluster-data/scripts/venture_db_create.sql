@@ -9,7 +9,19 @@ Add Datafile 'ts_venture_data'
 Use Logfile group ts_venture_log_group
 Engine=ndbcluster;*/
 
-DROPT TABLE IF EXISTS `connection_groups`
+DROP TABLE IF EXISTS `channels`
+CREATE  TABLE `channels` (
+	`channel_owner_uid` INT NOT NULL STORAGE MEMORY,
+	`channel_name` varchar(50) NOT NULL STORAGE MEMORY,
+	`channel_visibility` varchar(70) NOT NULL STORAGE DISK,
+	`channel_desc` varchar(300) STORAGE DISK,
+	PRIMARY KEY (channel_owner_uid, channel_name)) 
+TABLESPACE ts_venture
+ENGINE = ndbcluster
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `connection_groups`f
 CREATE  TABLE `connection_groups` (
 	`uid` INT NOT NULL STORAGE MEMORY,
 	`cg_name` varchar(50) COLLATE utf8_unicode_ci NOT NULL STORAGE MEMORY,
