@@ -1,0 +1,3 @@
+#!/bin/bash
+
+cp -v -R /home/stryker/sites/venture/public_html/* /media/stryker/DevOps/site/sites/venture/public_html/ 
