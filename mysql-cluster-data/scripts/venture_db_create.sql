@@ -13,7 +13,7 @@ DROP TABLE IF EXISTS `invitations`;
 CREATE  TABLE `invitations` (
 	`from_uid` INT NOT NULL STORAGE MEMORY,
 	`to_uid` INT NOT NULL STORAGE MEMORY,
-	`for_resource` varchar(58) NOT NULL STORAGE DISK,
+	`for_resource` varchar(55) NOT NULL STORAGE DISK,
 	`invitation_ts` timestamp NOT NULL STORAGE DISK DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (from_uid, to_uid)) 
 TABLESPACE ts_venture
