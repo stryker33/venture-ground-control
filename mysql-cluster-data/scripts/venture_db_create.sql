@@ -9,7 +9,35 @@ Add Datafile 'ts_venture_data'
 Use Logfile group ts_venture_log_group
 Engine=ndbcluster;*/
 
-DROP TABLE IF EXISTS `channels`
+DROP TABLE IF EXISTS `invitations`;
+CREATE  TABLE `invitations` (
+	`from_uid` INT NOT NULL STORAGE MEMORY,
+	`to_uid` INT NOT NULL STORAGE MEMORY,
+	`for_resource` varchar(55) NOT NULL STORAGE DISK,
+	`invitation_ts` timestamp NOT NULL STORAGE DISK DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (from_uid, to_uid)) 
+TABLESPACE ts_venture
+ENGINE = ndbcluster
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `videos`;
+CREATE  TABLE `videos` (
+	`video_id` varchar(55) NOT NULL STORAGE MEMORY, 
+	`channel_owner_uid` INT NOT NULL STORAGE MEMORY,
+	`channel_name` varchar(100) NOT NULL STORAGE DISK,
+	`video_title` varchar(100) NOT NULL STORAGE DISK,
+	`video_visibility` varchar(100) NOT NULL STORAGE DISK,
+	`video_desc` varchar(300) STORAGE DISK,
+	`video_type` ENUM('live_broadcast', 'uploaded') NOT NULL STORAGE DISK,
+	`broadcast_device` ENUM('web_cam', 'android_device', 'ios_device') STORAGE DISK,
+	PRIMARY KEY (video_id, channel_owner_uid)) 
+TABLESPACE ts_venture
+ENGINE = ndbcluster
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_unicode_ci;
+
+DROP TABLE IF EXISTS `channels`;
 CREATE  TABLE `channels` (
 	`channel_owner_uid` INT NOT NULL STORAGE MEMORY,
 	`channel_name` varchar(50) NOT NULL STORAGE MEMORY,
