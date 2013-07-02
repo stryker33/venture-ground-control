@@ -11,11 +11,12 @@ Engine=ndbcluster;*/
 
 DROP TABLE IF EXISTS `invitations`;
 CREATE  TABLE `invitations` (
-	`from_uid` INT NOT NULL STORAGE MEMORY,
+  `invitation_id` INT NOT NULL AUTO_INCREMENT STORAGE MEMORY,
+	`from_uid` INT NOT NULL STORAGE DISK,
 	`to_uid` INT NOT NULL STORAGE MEMORY,
 	`for_resource` varchar(55) NOT NULL STORAGE DISK,
 	`invitation_ts` timestamp NOT NULL STORAGE DISK DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (from_uid, to_uid)) 
+	PRIMARY KEY (invitation_id, to_uid)) 
 TABLESPACE ts_venture
 ENGINE = ndbcluster
 DEFAULT CHARACTER SET = utf8
@@ -30,7 +31,7 @@ CREATE  TABLE `videos` (
 	`video_visibility` varchar(100) NOT NULL STORAGE DISK,
 	`video_desc` varchar(300) STORAGE DISK,
 	`video_type` ENUM('live_broadcast', 'uploaded') NOT NULL STORAGE DISK,
-	`broadcast_device` ENUM('web_cam', 'android_device', 'ios_device') STORAGE DISK,
+	`broadcast_medium` ENUM('web_interface', 'android_interface', 'ios_interface') NOT NULL STORAGE DISK,
 	PRIMARY KEY (video_id, channel_owner_uid)) 
 TABLESPACE ts_venture
 ENGINE = ndbcluster
