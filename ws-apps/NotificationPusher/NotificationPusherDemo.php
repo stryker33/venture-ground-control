@@ -1,5 +1,5 @@
 <?php
-	require __DIR__."/../../vendor/autoload.php";
+	require __DIR__."/../ratchetLib/vendor/autoload.php";
 
 	use Ratchet\ConnectionInterface;
 	use Ratchet\Wamp\WampServerInterface;
@@ -7,15 +7,30 @@
 	class NotificationPusherDemo implements WampServerInterface
 	{
 		protected $notificationChannel = array();
+		public $logFileHandle;
+
+		function __construct()
+		{
+			$date = new DateTime();
+			$this->logFileHandle = fopen("serverLog/serverLog_".$date->format("dmY"), "a");
+			$this->logMessage("Server Started...");
+		}
+
+		public function logMessage($message)
+		{
+			$date = new DateTime();
+			echo $date->format("dmY_His").": ".$message."\n";
+			fwrite($this->logFileHandle, $date->format("dmY_His").": ".$message."\n");
+		}
 
 		public function onOpen(ConnectionInterface $conn)
 		{
-			echo "New Connection ({$conn->resourceId})\n";
+			$this->logMessage("New Connection ({$conn->resourceId})");
 		}
 
 		public function onClose(ConnectionInterface $conn)
 		{
-			echo "Connection Closed ({$conn->resourceId})\n";
+			$this->logMessage("Connection Closed ({$conn->resourceId})");
 		}
 
 		public function onSubscribe(ConnectionInterface $conn, $topic)
@@ -39,7 +54,7 @@
 			{
 				$topic = $this->notificationChannel[$notification["id"]];
 				$topic->broadcast(json_encode($notification));
-				echo "Notification Sent\n";
+				$this->logMessage("Notification Sent");
 			}
 		}
 
@@ -55,8 +70,12 @@
 
 		public function onError(ConnectionInterface $conn, \Exception $e)
 		{
-			echo "Error: ".$e."\n";
+			$this->logMessage("Error: ".$e);
+		}
+
+		function __destruct()
+		{
+			fclose($this->logFileHandle);
 		}
 	}
-
 ?>

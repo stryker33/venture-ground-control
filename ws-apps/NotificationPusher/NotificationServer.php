@@ -1,5 +1,5 @@
 <?php
-	require __DIR__."/../../vendor/autoload.php";
+	require __DIR__."/../ratchetLib/vendor/autoload.php";
 	require __DIR__."/NotificationPusherDemo.php";
 
 	$loop = React\EventLoop\Factory::create();
