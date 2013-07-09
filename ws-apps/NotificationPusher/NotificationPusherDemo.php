@@ -11,6 +11,7 @@
 
 		function __construct()
 		{
+			echo "Server Started...";
 			$date = new DateTime();
 			$this->logFileHandle = fopen("serverLog/serverLog_".$date->format("dmY"), "a");
 			$this->logMessage("Server Started...");
@@ -35,6 +36,7 @@
 
 		public function onSubscribe(ConnectionInterface $conn, $topic)
 		{
+			$this->logMessage($topic->getID()." connected...");
 			if(!array_key_exists($topic->getID(), $this->notificationChannel))
 			{
 				$this->notificationChannel[$topic->getId()] = $topic;
@@ -44,17 +46,19 @@
 
 		public function onUnSubscribe(ConnectionInterface $conn, $topic)
 		{
+			$this->logMessage($topic->getID()." disconnected...");
 			$topic->remove($conn);
 		}
 
 		public function onNotification($notification)
 		{
 			$notification = json_decode($notification, true);
-			if(array_key_exists($notification["id"], $this->notificationChannel))
+			if(array_key_exists($notification["uid"], $this->notificationChannel))
 			{
-				$topic = $this->notificationChannel[$notification["id"]];
+				$topic = $this->notificationChannel[$notification["uid"]];
 				$topic->broadcast(json_encode($notification));
 				$this->logMessage("Notification Sent");
+				echo "Notification Sent";
 			}
 		}
 
@@ -75,6 +79,7 @@
 
 		function __destruct()
 		{
+			$this->logMessage("Server Shutdown...");
 			fclose($this->logFileHandle);
 		}
 	}
