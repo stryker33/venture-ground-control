@@ -9,6 +9,19 @@ Add Datafile 'ts_venture_data'
 Use Logfile group ts_venture_log_group
 Engine=ndbcluster;*/
 
+DROP TABLE IF EXISTS `channel_comments`;
+CREATE  TABLE `channel_comments` (
+  `comment_id` INT NOT NULL AUTO_INCREMENT,
+  `channel_id` VARCHAR(55) NOT NULL STORAGE MEMORY,
+  `commentor_id` INT NOT NULL STORAGE DISK,
+  `comment` VARCHAR(500) NOT NULL STORAGE DISK,
+  `comment_ts` TIMESTAMP NOT NULL STORAGE DISK DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, 
+  PRIMARY KEY (comment_id, channel_id)) 
+TABLESPACE ts_venture
+ENGINE = ndbcluster
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_unicode_ci;
+
 DROP TABLE IF EXISTS `invitations`;
 CREATE  TABLE `invitations` (
   `invitation_id` INT NOT NULL AUTO_INCREMENT STORAGE MEMORY,
@@ -40,11 +53,12 @@ COLLATE = utf8_unicode_ci;
 
 DROP TABLE IF EXISTS `channels`;
 CREATE  TABLE `channels` (
+  `channel_id` VARCHAR(55) NOT NULL STORAGE MEMORY,
 	`channel_owner_uid` INT NOT NULL STORAGE MEMORY,
 	`channel_name` varchar(50) NOT NULL STORAGE MEMORY,
 	`channel_visibility` varchar(70) NOT NULL STORAGE DISK,
 	`channel_desc` varchar(300) STORAGE DISK,
-	PRIMARY KEY (channel_owner_uid, channel_name)) 
+	PRIMARY KEY (channel_id, channel_owner_uid, channel_name)) 
 TABLESPACE ts_venture
 ENGINE = ndbcluster
 DEFAULT CHARACTER SET = utf8
