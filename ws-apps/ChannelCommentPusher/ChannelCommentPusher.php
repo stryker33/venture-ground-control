@@ -4,14 +4,13 @@
 	use Ratchet\ConnectionInterface;
 	use Ratchet\Wamp\WampServerInterface;
 
-	class NotificationPusherDemo implements WampServerInterface
+	class ChannelCommentPusher implements WampServerInterface
 	{
-		protected $userNotificationChannel = array();
+		protected $channels = array();
 		public $logFileHandle;
 
 		function __construct()
 		{
-			echo "Server Started...";
 			$date = new DateTime();
 			$this->logFileHandle = fopen("serverLog/serverLog_".$date->format("dmY"), "a");
 			$this->logMessage("Server Started...");
@@ -36,29 +35,31 @@
 
 		public function onSubscribe(ConnectionInterface $conn, $topic)
 		{
-			$this->logMessage($topic->getID()." connected...");
-			if(!array_key_exists($topic->getID(), $this->userNotificationChannel))
+			$this->logMessage($conn->resourceId." subscribed to ".$topic->getId());
+			if(!array_key_exists($topic->getID(), $this->channels))
 			{
-				$this->userNotificationChannel[$topic->getId()] = $topic;
+				$this->channels[$topic->getId()] = $topic;
 			}
 			$topic->add($conn);
 		}
 
 		public function onUnSubscribe(ConnectionInterface $conn, $topic)
 		{
-			$this->logMessage($topic->getID()." disconnected...");
+			$this->logMessage($conn->resourceId." unsubscribed from ".$topic);
 			$topic->remove($conn);
+			if($topic->count == 0)
+				unset($this->channels[$topic->getId()]);
 		}
 
 		public function onNotification($notification)
 		{
+			$this->logMessage($notification." recieved...");
 			$notification = json_decode($notification, true);
-			if(array_key_exists($notification["uid"], $this->userNotificationChannel))
+			if(array_key_exists($notification["cid"], $this->channels))
 			{
-				$topic = $this->userNotificationChannel[$notification["uid"]];
+				$topic = $this->channels[$notification["cid"]];
 				$topic->broadcast(json_encode($notification));
-				$this->logMessage("Notification Sent");
-				echo "Notification Sent";
+				$this->logMessage($notification["comment"]." sent to subscribers...");
 			}
 		}
 
