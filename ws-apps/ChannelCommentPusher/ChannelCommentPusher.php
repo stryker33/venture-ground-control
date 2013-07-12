@@ -12,7 +12,7 @@
 		function __construct()
 		{
 			$date = new DateTime();
-			$this->logFileHandle = fopen("serverLog/serverLog_".$date->format("dmY"), "a");
+			$this->logFileHandle = fopen("serverLog/serverLog_".$date->format("dmY").".log", "a");
 			$this->logMessage("Server Started...");
 		}
 
